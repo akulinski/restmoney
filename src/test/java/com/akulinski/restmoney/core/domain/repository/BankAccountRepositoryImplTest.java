@@ -130,8 +130,57 @@ public class BankAccountRepositoryImplTest {
 
     }
 
+    @Test
+    public void transferMoneyToNonExistentAccount() {
+        BankAccount bankAccount = new BankAccount();
+        bankAccount.setAccountNumber("123");
+        bankAccount.setBalance(1F);
+
+        bankAccountRepository.save(bankAccount);
+
+
+        final var result = bankAccountRepository.transferMoney("123", "jksahdfiadfiafiha", 1F);
+
+        final var byAccountNumber = bankAccountRepository.findByAccountNumber("123");
+
+        assertEquals(byAccountNumber.get().getBalance(), (Float) 1F);
+    }
 
     @Test
+    public void transferMoneyFromNonExistentAccount() {
+        BankAccount bankAccount = new BankAccount();
+        bankAccount.setAccountNumber("123");
+        bankAccount.setBalance(1F);
+
+        bankAccountRepository.save(bankAccount);
+
+
+        final var result = bankAccountRepository.transferMoney("cvdfsafdadadfafdadsafsa", "123", 1F);
+
+        final var byAccountNumber = bankAccountRepository.findByAccountNumber("123");
+
+        assertEquals(byAccountNumber.get().getBalance(), (Float) 1F);
+    }
+
+
+    @Test
+    public void transferMoneyWithNullAccountNumber() {
+        BankAccount bankAccount = new BankAccount();
+        bankAccount.setAccountNumber("123");
+        bankAccount.setBalance(1F);
+
+        bankAccountRepository.save(bankAccount);
+
+
+        final var result = bankAccountRepository.transferMoney(null, "123", 1F);
+
+        final var byAccountNumber = bankAccountRepository.findByAccountNumber("123");
+
+        assertEquals(byAccountNumber.get().getBalance(), (Float) 1F);
+    }
+
+
+    @Test(expected = IllegalArgumentException.class)
     public void transferMoneyWithBadArgument() {
         BankAccount bankAccount = new BankAccount();
         bankAccount.setAccountNumber("123");
@@ -232,7 +281,7 @@ public class BankAccountRepositoryImplTest {
 
         final var bankAccount1 = bankAccountRepository.findByAccountNumber("123").get();
         bankAccount1.setBalance(1F);
-        bankAccountRepository.update(bankAccount1);
+        bankAccountRepository.updateAndFlush(bankAccount1);
 
         assertEquals((Float) 1F, bankAccountRepository.findByAccountNumber("123").get().getBalance());
     }
@@ -246,8 +295,7 @@ public class BankAccountRepositoryImplTest {
         bankAccountRepository.save(bankAccount);
 
         final BankAccount bankAccount1 = null;
-        bankAccountRepository.update(bankAccount1);
-
+        bankAccountRepository.updateAndFlush(bankAccount1);
         assertEquals((Float) 1000F, bankAccountRepository.findByAccountNumber("123").get().getBalance());
     }
 

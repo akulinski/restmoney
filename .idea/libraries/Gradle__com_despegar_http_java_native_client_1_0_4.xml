@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: com.despegar:http-java-native-client:1.0.4">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.despegar/http-java-native-client/1.0.4/bf23da9c2873846ca3ac610be2e37a26668f0a0e/http-java-native-client-1.0.4.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.despegar/http-java-native-client/1.0.4/6c05abbb0b067265f1fcb293732ac406873450e8/http-java-native-client-1.0.4-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

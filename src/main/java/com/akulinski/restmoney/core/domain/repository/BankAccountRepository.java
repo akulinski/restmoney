@@ -13,9 +13,12 @@ public interface BankAccountRepository {
 
     Optional<BankAccount> findByAccountNumber(String bankAccount);
 
+    Optional<BankAccount> findById(Long id);
+
     List findAll();
 
-    Boolean transferMoney(String fromAccount, String toAccount, Float amount);
+    Boolean transferMoney(String fromAccount, String toAccount, Float amount) throws IllegalArgumentException;
 
-    void update(BankAccount bankAccount);
+    void updateAndFlush(BankAccount bankAccount);
+
 }

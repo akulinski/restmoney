@@ -44,4 +44,6 @@ dependencies {
     compile group: 'org.hibernate.orm', name: 'hibernate-core', version: '6.0.0.Alpha2'
     compile group: 'com.h2database', name: 'h2', version: '1.4.199'
 
+    testCompile "com.despegar:spark-test:1.1.8"
+
 }

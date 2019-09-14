@@ -7,8 +7,7 @@ import spark.ResponseTransformer;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import static spark.Spark.get;
-import static spark.Spark.path;
+import static spark.Spark.*;
 
 @Singleton
 public class ResourceRegistry {
@@ -20,16 +19,22 @@ public class ResourceRegistry {
     private MockConfig mockConfig;
 
     @Inject
-    ResourceRegistry(ResponseTransformer responseTransformer, BankAccountController bankAccountController, MockConfig mockConfig) {
+    public ResourceRegistry(ResponseTransformer responseTransformer, BankAccountController bankAccountController, MockConfig mockConfig) {
         this.responseTransformer = responseTransformer;
         this.bankAccountController = bankAccountController;
         this.mockConfig = mockConfig;
     }
 
     public void registerRoutes() {
+
         mockConfig.mockData();
-        path("/api/v1",()->{
+
+        path("/api/v1", () -> {
             get("/get-all-accounts", "application/json", bankAccountController::findAllAccounts, responseTransformer);
+            post("/transfer", "application/json", bankAccountController::transferMoney, responseTransformer);
+            get("/find-by-id/:id", "application/json", bankAccountController::findById, responseTransformer);
+            post("/create-account", "application/json", bankAccountController::create, responseTransformer);
+            put("/update-account", "application/json", bankAccountController::update, responseTransformer);
         });
 
     }
