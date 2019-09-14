@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import static spark.Spark.get;
+import static spark.Spark.path;
 
 @Singleton
 public class ResourceRegistry {
@@ -27,7 +28,9 @@ public class ResourceRegistry {
 
     public void registerRoutes() {
         mockConfig.mockData();
+        path("/api/v1",()->{
+            get("/get-all-accounts", "application/json", bankAccountController::findAllAccounts, responseTransformer);
+        });
 
-        get("/api/v1/get-all-accounts", "application/json", bankAccountController::findAllAccounts, responseTransformer);
     }
 }

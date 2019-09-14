@@ -1,9 +1,7 @@
 package com.akulinski.restmoney.core.modules;
 
-import com.akulinski.restmoney.core.controllers.BankAccountController;
 import com.akulinski.restmoney.core.domain.repository.BankAccountRepository;
 import com.akulinski.restmoney.core.domain.repository.BankAccountRepositoryImpl;
-import com.akulinski.restmoney.core.services.BankAccountService;
 import dagger.Module;
 import dagger.Provides;
 import org.hibernate.SessionFactory;
@@ -23,14 +21,5 @@ public class DbModule {
         return new BankAccountRepositoryImpl(sessionFactory);
     }
 
-    @Provides
-    public BankAccountService bankAccountService(BankAccountRepository bankAccountRepository) {
-        return new BankAccountService(bankAccountRepository);
-    }
-
-    @Provides
-    public BankAccountController bankAccountController(BankAccountService bankAccountService) {
-        return new BankAccountController(bankAccountService);
-    }
 
 }

@@ -18,4 +18,8 @@ public class BankAccountService {
     public List<BankAccount> getAllAccounts() {
         return (List<BankAccount>) bankAccountRepository.findAll();
     }
+
+    public Boolean transferMoney(String fromAccount, String toAccount, Float amount) {
+        return Boolean.FALSE;
+    }
 }

@@ -21,11 +21,28 @@ public class BankAccountRepositoryImpl implements BankAccountRepository {
     public Long save(BankAccount bankAccount) {
         final var session = sessionFactory.openSession();
         session.beginTransaction();
+
         final var save = session.save(bankAccount);
         session.flush();
         session.close();
 
         return (Long) save;
+    }
+
+    @Override
+    public void update(BankAccount bankAccount) {
+
+        final var session = sessionFactory.openSession();
+        final var transaction = session.beginTransaction();
+        try {
+            session.update(bankAccount);
+            session.flush();
+        } catch (RuntimeException r) {
+            transaction.rollback();
+        } finally {
+            session.close();
+        }
+
     }
 
     @Override
@@ -38,8 +55,8 @@ public class BankAccountRepositoryImpl implements BankAccountRepository {
 
     @Override
     public Optional<BankAccount> findByAccountNumber(String accountNumber) {
-        try {
-            final var session = sessionFactory.openSession();
+
+        try (var session = sessionFactory.openSession()) {
             final var query = session.createQuery("SELECT b FROM BankAccount b WHERE b.accountNumber = :accountNumber");
             query.setParameter("accountNumber", accountNumber);
             final var singleResult = (BankAccount) query.getSingleResult();
@@ -57,4 +74,36 @@ public class BankAccountRepositoryImpl implements BankAccountRepository {
 
         return bankAccounts.getResultList();
     }
+
+    @Override
+    public Boolean transferMoney(String fromAccount, String toAccount, Float amount) {
+
+        if (amount <= 0F) {
+            throw new IllegalArgumentException(String.format("Non positive values not allowed. Got: %s", amount));
+        }
+
+        final var session = sessionFactory.openSession();
+        final var transaction = session.beginTransaction();
+
+        try {
+            final var byAccountNumberFrom = findByAccountNumber(fromAccount).orElseThrow(() -> new IllegalArgumentException(String.format("No account with number: %s", fromAccount)));
+            byAccountNumberFrom.setBalance(byAccountNumberFrom.getBalance() - amount);
+            update(byAccountNumberFrom);
+
+            final var byAccountNumberTo = findByAccountNumber(toAccount).orElseThrow(() -> new IllegalArgumentException(String.format("No account with number: %s", toAccount)));
+            byAccountNumberTo.setBalance(byAccountNumberTo.getBalance() + amount);
+            update(byAccountNumberTo);
+            transaction.commit();
+
+            return Boolean.TRUE;
+        } catch (RuntimeException ex) {
+            transaction.rollback();
+        } finally {
+            session.close();
+        }
+
+        return Boolean.FALSE;
+    }
+
+
 }

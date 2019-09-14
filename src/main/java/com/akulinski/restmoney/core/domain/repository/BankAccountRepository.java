@@ -14,4 +14,8 @@ public interface BankAccountRepository {
     Optional<BankAccount> findByAccountNumber(String bankAccount);
 
     List findAll();
+
+    Boolean transferMoney(String fromAccount, String toAccount, Float amount);
+
+    void update(BankAccount bankAccount);
 }
