@@ -4,5 +4,9 @@
     <annotationProcessing>
       <profile default="true" name="Default" enabled="true" />
     </annotationProcessing>
+    <bytecodeTargetLevel target="12">
+      <module name="restmoney.main" target="12" />
+      <module name="restmoney.test" target="12" />
+    </bytecodeTargetLevel>
   </component>
 </project>
