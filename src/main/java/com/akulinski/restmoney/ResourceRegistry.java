@@ -26,8 +26,9 @@ public class ResourceRegistry {
     }
 
     public void registerRoutes() {
-
-        mockConfig.mockData();
+        if ("DEV".equals(System.getenv().get("_RESTMONEY_ENVIROMENT"))) {
+            mockConfig.mockData();
+        }
 
         path("/api/v1", () -> {
             get("/get-all-accounts", "application/json", bankAccountController::findAllAccounts, responseTransformer);
@@ -37,5 +38,6 @@ public class ResourceRegistry {
             put("/update-account", "application/json", bankAccountController::update, responseTransformer);
         });
 
+        after(((request, response) -> response.type("application/json")));
     }
 }
