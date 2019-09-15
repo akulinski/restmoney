@@ -79,17 +79,16 @@ public class BankAccountServiceTest {
         bankAccountRepository.save(account);
 
         BankAccount account2 = new BankAccount();
-        account2.setAccountNumber("randomnumberfloat");
+        account2.setAccountNumber("jsdaof83802");
         account2.setBalance(0F);
 
-        bankAccountRepository.save(account2);
 
         final var resultTransfer = bankAccountService.transferMoney(account.getAccountNumber(), account2.getAccountNumber(), 50F);
 
         assertFalse(resultTransfer);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void transferZeroMoney() {
         BankAccount account = new BankAccount();
         account.setAccountNumber("123456789");
@@ -98,12 +97,14 @@ public class BankAccountServiceTest {
         bankAccountRepository.save(account);
 
         BankAccount account2 = new BankAccount();
-        account2.setAccountNumber("randomnumberfloat");
+        account2.setAccountNumber("jsdaof83802sadsads21321");
         account2.setBalance(0F);
 
         bankAccountRepository.save(account2);
 
-        bankAccountService.transferMoney(account.getAccountNumber(), account2.getAccountNumber(), 0F);
+        final var result = bankAccountService.transferMoney(account.getAccountNumber(), account2.getAccountNumber(), 0F);
+
+        assertFalse(result);
     }
 
 }

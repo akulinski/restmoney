@@ -10,6 +10,7 @@ public class EntryPoint {
     private ApplicationComponent applicationComponent;
 
     private void start() {
+
         port(8080);
 
         initializeDagger();

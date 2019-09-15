@@ -10,7 +10,6 @@ import com.akulinski.restmoney.core.services.BankAccountService;
 import com.akulinski.restmoney.dto.MoneyTransferDTO;
 import com.despegar.http.client.*;
 import com.despegar.sparkjava.test.SparkServer;
-import com.github.javafaker.Faker;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.eclipse.jetty.http.HttpStatus;
@@ -34,9 +33,8 @@ public class BankAccountControllerTest {
     private final static MockConfig mockConfig = new MockConfig(bankAccountRepository);
     private final static GsonTransformer gsonTransformer = new GsonTransformer(gson);
     private final static BankAccountController bankAccountController = new BankAccountController(gson, bankAccountService);
-    private final static ResourceRegistry resourceRegistry = new ResourceRegistry(gsonTransformer, bankAccountController, mockConfig);
+    private final static ResourceRegistry resourceRegistry = new ResourceRegistry(gsonTransformer, bankAccountController, mockConfig, gson);
     private static final String HTTP_LOCALHOST_8080_API_V_1 = "http://localhost:8080/api/v1";
-    private final Faker faker = new Faker();
 
     @ClassRule
     public static SparkServer testServer = new SparkServer<>(BankAccountControllerTest.WebAppTestSparkApp.class, 8080);
@@ -83,7 +81,7 @@ public class BankAccountControllerTest {
     @Test
     public void findById() throws HttpClientException {
         BankAccount bankAccount = new BankAccount();
-        final var digits = faker.number().digits(255);
+        final var digits = "1162";
         bankAccount.setAccountNumber(digits);
         bankAccount.setBalance(0F);
 
@@ -100,7 +98,7 @@ public class BankAccountControllerTest {
     public void update() throws HttpClientException {
 
         BankAccount bankAccount = new BankAccount();
-        final var digits = "1234567";
+        final var digits = "1";
         bankAccount.setAccountNumber(digits);
         bankAccount.setBalance(0F);
 
