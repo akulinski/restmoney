@@ -20,7 +20,7 @@ public class BankAccountRepositoryImpl implements BankAccountRepository {
     }
 
     @Override
-    public Long save(BankAccount bankAccount) {
+    public synchronized Long save(BankAccount bankAccount) {
         final var session = sessionFactory.openSession();
         session.beginTransaction();
 
@@ -33,7 +33,7 @@ public class BankAccountRepositoryImpl implements BankAccountRepository {
 
 
     @Override
-    public void updateAndFlush(BankAccount bankAccount) {
+    public synchronized void updateAndFlush(BankAccount bankAccount) {
 
         final var session = sessionFactory.openSession();
         final var transaction = session.beginTransaction();
@@ -108,30 +108,29 @@ public class BankAccountRepositoryImpl implements BankAccountRepository {
 
         final var session = sessionFactory.openSession();
         final var transaction = session.beginTransaction();
+        synchronized (this) {
+            try {
 
-        try {
+                final var byAccountNumberFrom = findByAccountNumber(fromAccount).orElseThrow(() -> new IllegalArgumentException(String.format("No account with number: %s", fromAccount)));
+                byAccountNumberFrom.setBalance(byAccountNumberFrom.getBalance() - amount);
+                session.update(byAccountNumberFrom);
 
-            final var byAccountNumberFrom = findByAccountNumber(fromAccount).orElseThrow(() -> new IllegalArgumentException(String.format("No account with number: %s", fromAccount)));
-            byAccountNumberFrom.setBalance(byAccountNumberFrom.getBalance() - amount);
-            session.update(byAccountNumberFrom);
+                final var byAccountNumberTo = findByAccountNumber(toAccount).orElseThrow(() -> new IllegalArgumentException(String.format("No account with number: %s", toAccount)));
+                byAccountNumberTo.setBalance(byAccountNumberTo.getBalance() + amount);
+                session.update(byAccountNumberTo);
 
-            final var byAccountNumberTo = findByAccountNumber(toAccount).orElseThrow(() -> new IllegalArgumentException(String.format("No account with number: %s", toAccount)));
-            byAccountNumberTo.setBalance(byAccountNumberTo.getBalance() + amount);
-            session.update(byAccountNumberTo);
+                session.flush();
+                transaction.commit();
 
-            session.flush();
-            transaction.commit();
-
-            return Boolean.TRUE;
-        } catch (RuntimeException ex) {
-            log.error(ex.getLocalizedMessage());
-            transaction.rollback();
-        } finally {
-            session.close();
+                return Boolean.TRUE;
+            } catch (RuntimeException ex) {
+                log.error(ex.getLocalizedMessage());
+                transaction.rollback();
+            } finally {
+                session.close();
+            }
         }
-
         return Boolean.FALSE;
     }
-
 
 }
