@@ -1,5 +1,6 @@
 # Prerequisites
 * JDK 11
+* Lombok plugin for intellij
 
 Before running project from IDE build it using gradle. Dagger has to do its magic and create DaggerApplicationComponent.
 
